@@ -37,18 +37,6 @@
       ]
     },
     {
-      "name": "entry_test",
-      "srcPath": "./entry",
-      "targets": [
-        {
-          "name": "default",
-          "applyToProducts": [
-            "default"
-          ]
-        }
-      ]
-    },
-    {
       "name": "path_provider_ohos",
       "srcPath": "./.flutter_plugins_local/path_provider_ohos",
       "targets": [

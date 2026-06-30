@@ -45,6 +45,7 @@ ai_config.json
 *.hap
 *.aab
 *.ipa
+dist/
 
 # Flutter SDK（如下载到项目内）
 flutter-sdk/

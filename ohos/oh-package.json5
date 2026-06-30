@@ -1,8 +1,8 @@
 {
   "modelVersion": "5.0.0",
-  "name": "radatlas_mobile",
+  "name": "AI_Radiagnos",
   "version": "1.0.0",
-  "description": "Please describe the basic information.",
+  "description": "AI_Radiagnos - AI 影像辅助诊断",
   "main": "",
   "author": "",
   "license": "",
