@@ -1,4 +1,4 @@
-package com.radatlas.radatlas_mobile
+package com.airadiagnos.app
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -1,6 +1,6 @@
 {
   "app": {
-    "bundleName": "com.radatlas.radatlas_mobile",
+    "bundleName": "com.airadiagnos.app",
     "vendor": "AI_Radiagnos",
     "versionCode": 1000000,
     "versionName": "1.0.0",
