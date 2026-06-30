@@ -1,0 +1,99 @@
+name: radatlas_mobile
+description: AI_Radiagnos - AI 影像辅助诊断（Android / iOS / HarmonyOS 三端通用）
+publish_to: 'none'
+version: 1.3.0+1
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+  # 注意：不设置 flutter 约束，因为鸿蒙 Flutter (flutter_flutter_ohos)
+  # 的 version 文件为 "0.0.0-unknown"，无法满足 '>=3.13.0' 约束。
+  # Dart SDK 约束已能保证兼容性（标准 Flutter 3.27.0 = Dart 3.6.0，鸿蒙 = Dart 3.6.2）。
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # 状态管理
+  provider: ^6.1.2
+
+  # 网络
+  http: ^1.2.2
+
+  # 本地存储（鸿蒙适配：同名插件用 git ref 覆盖，三端共用）
+  shared_preferences:
+    git:
+      url: https://gitcode.com/openharmony-tpc/flutter_packages.git
+      path: packages/shared_preferences/shared_preferences
+      ref: br_shared_preferences-v2.5.3_ohos
+  path_provider:
+    git:
+      url: https://gitcode.com/openharmony-tpc/flutter_packages.git
+      path: packages/path_provider/path_provider
+      ref: br_path_provider-v2.1.5_ohos
+
+  # flutter_secure_storage：原包(Android/iOS/其它)，鸿蒙端用条件导入 shared_preferences 后备
+  flutter_secure_storage: ^9.2.2
+
+  # UI 辅助
+  cupertino_icons: ^1.0.8
+  flutter_markdown: ^0.7.4
+  url_launcher:
+    git:
+      url: https://gitcode.com/openharmony-tpc/flutter_packages.git
+      path: packages/url_launcher/url_launcher
+      ref: br_url_launcher-v6.3.2_ohos
+
+  # PDF 笔记导出
+  # printing 用本地鸿蒙适配分支（已 patch Platform.isOhos 兼容标准 Flutter）
+  # 三端共用此 path 依赖
+  pdf: ^3.11.1
+  printing:
+    path: third_party/printing_ohos
+
+  # 分享（鸿蒙适配：同名插件用 git ref 覆盖，三端共用）
+  share_plus:
+    git:
+      url: https://gitcode.com/openharmony-sig/flutter_plus_plugins.git
+      path: packages/share_plus/share_plus
+      ref: br_share_plus-v10.1.1_ohos
+
+  # 工具
+  equatable: ^2.0.5
+  uuid: ^4.5.1
+  crypto: ^3.0.6
+
+# 鸿蒙适配：统一传递依赖来源，避免 share_plus 内部依赖的 path_provider 与直接依赖冲突
+dependency_overrides:
+  path_provider:
+    git:
+      url: https://gitcode.com/openharmony-tpc/flutter_packages.git
+      path: packages/path_provider/path_provider
+      ref: br_path_provider-v2.1.5_ohos
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  flutter_launcher_icons: ^0.13.1
+
+flutter:
+  uses-material-design: true
+
+  assets:
+    - assets/fonts/
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "icon.png"
+  # 自适应图标会裁剪前景图至中心安全区，为保证 icon.png 完整不切割，
+  # 不设置 adaptive_icon_background / adaptive_icon_foreground，
+  # 仅生成旧式全图 mipmap（API 25 以下使用全图，API 26+ 仍生成自适应但前景为完整图）。
+  min_sdk_android: 21
+  remove_alpha_ios: true
+  web:
+    generate: true
+    image_path: "icon.png"
+    background_color: "#FFFFFF"
+    theme_color: "#1565C0"
+

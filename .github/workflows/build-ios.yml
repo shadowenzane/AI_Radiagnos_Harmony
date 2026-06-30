@@ -1,0 +1,97 @@
+name: Build iOS IPA (Unsigned)
+
+# 在 macOS runner 上构建未签名 IPA
+# 产物可通过 AltStore / Sideloadly / TrollStore 侧载到设备
+# 无需 Apple Developer 账号
+
+on:
+  # 手动触发
+  workflow_dispatch:
+  # 推送到 main / master 分支时自动构建
+  push:
+    branches:
+      - main
+      - master
+    paths-ignore:
+      - 'docs/**'
+      - '*.md'
+  # 发布 Release 时自动构建
+  release:
+    types: [published]
+
+env:
+  FLUTTER_VERSION: '3.27.0'
+  FLUTTER_CHANNEL: 'stable'
+
+jobs:
+  build-ios:
+    name: Build Unsigned IPA
+    runs-on: macos-14
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: ${{ env.FLUTTER_VERSION }}
+          channel: ${{ env.FLUTTER_CHANNEL }}
+          cache: true
+
+      - name: Flutter doctor
+        run: flutter doctor -v
+
+      - name: Resolve dependencies
+        run: flutter pub get
+
+      - name: Verify printing_ohos local dependency
+        run: |
+          if [ ! -d "third_party/printing_ohos" ]; then
+            echo "::error::third_party/printing_ohos 不存在，无法解析 printing 依赖"
+            exit 1
+          fi
+          echo "✓ third_party/printing_ohos 存在"
+
+      - name: Generate launcher icons
+        run: dart run flutter_launcher_icons || true
+
+      - name: Build iOS (no codesign)
+        run: |
+          flutter build ios --release --no-codesign
+
+      - name: Package unsigned IPA
+        run: |
+          # 将 .app 打包成 .ipa (Payload 目录结构)
+          APP_PATH="build/ios/iphoneos/Runner.app"
+          if [ ! -d "$APP_PATH" ]; then
+            echo "::error::未找到 Runner.app：$APP_PATH"
+            exit 1
+          fi
+          mkdir -p Payload
+          cp -R "$APP_PATH" Payload/
+          # 生成 IPA
+          IPA_NAME="AI_Radiagnos-unsigned-$(date +%Y%m%d-%H%M).ipa"
+          zip -qr "$IPA_NAME" Payload
+          # 输出信息
+          echo "✓ 已生成未签名 IPA：$IPA_NAME"
+          ls -lh "$IPA_NAME"
+          # 重命名为固定名称方便上传
+          mv "$IPA_NAME" AI_Radiagnos-unsigned.ipa
+
+      - name: Upload IPA artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: AI_Radiagnos-ios-unsigned
+          path: AI_Radiagnos-unsigned.ipa
+          retention-days: 30
+          if-no-files-found: error
+
+      - name: Upload to Release (if release event)
+        if: github.event_name == 'release'
+        uses: softprops/action-gh-release@v2
+        with:
+          files: AI_Radiagnos-unsigned.ipa
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

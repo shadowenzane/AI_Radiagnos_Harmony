@@ -1,0 +1,10 @@
+{
+  "module": {
+    "name": "printing",
+    "type": "har",
+    "deviceTypes": [
+      "default",
+      "tablet"
+    ]
+  }
+}

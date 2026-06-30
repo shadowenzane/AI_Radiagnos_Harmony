@@ -1,0 +1,27 @@
+{
+	"app": {
+		"bundleName": "net.nfet.flutter.printing",
+		"debug": true,
+		"versionCode": 1000000,
+		"versionName": "1.0.0",
+		"minAPIVersion": 50000012,
+		"targetAPIVersion": 50000012,
+		"apiReleaseType": "Beta1",
+		"compileSdkVersion": "5.0.0.25",
+		"compileSdkType": "HarmonyOS",
+		"appEnvironments": [],
+		"bundleType": "app"
+	},
+	"module": {
+		"name": "printing",
+		"type": "har",
+		"deviceTypes": [
+			"default",
+			"tablet"
+		],
+		"installationFree": false,
+		"virtualMachine": "ark12.0.4.0",
+		"compileMode": "esmodule",
+		"dependencies": []
+	}
+}
